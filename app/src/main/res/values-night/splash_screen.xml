@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SplashScreenDiary" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#001B3D</item>
+        <item name="windowSplashScreenIconBackgroundColor">#001B3D</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.DashDiary</item>
+    </style>
+</resources>
