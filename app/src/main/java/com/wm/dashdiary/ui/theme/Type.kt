@@ -1,4 +1,4 @@
-package com.example.dashdiary.ui.theme
+package com.wm.dashdiary.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

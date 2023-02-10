@@ -1,4 +1,4 @@
-package com.example.dashdiary.ui.theme
+package com.wm.dashdiary.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

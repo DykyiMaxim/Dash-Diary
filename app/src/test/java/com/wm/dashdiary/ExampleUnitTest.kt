@@ -1,4 +1,4 @@
-package com.example.dashdiary
+package com.wm.dashdiary
 
 import org.junit.Test
 

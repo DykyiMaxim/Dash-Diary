@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.dashdiary'
+    namespace 'com.wm.dashdiary'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.dashdiary"
+        applicationId "com.wm.dashdiary"
         minSdk 29
         targetSdk 33
         versionCode 1
@@ -22,6 +22,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String","googlecloudWebId", "${properties.getProperty("googlecloudWebId")}"
+        buildConfigField "String","AtlasAppId", "${properties.getProperty("AtlasAppId")}"
     }
 
     buildTypes {
