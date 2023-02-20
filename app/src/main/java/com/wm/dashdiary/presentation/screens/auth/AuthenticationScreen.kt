@@ -9,6 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.stevdzasan.messagebar.ContentWithMessageBar
 import com.stevdzasan.messagebar.MessageBarState
@@ -19,12 +20,14 @@ import com.stevdzasan.onetap.OneTapSignInWithGoogle
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AuthenticationScreen(
+    authenticated:Boolean,
     loadingState: Boolean,
     oneTapState: OneTapSignInState,
     messageBarState: MessageBarState,
     onButtonClicked: () -> Unit,
     onTokenIdReceives:(String)->Unit,
-    onDialogDismast:(String)->Unit
+    onDialogDismast:(String)->Unit,
+    navigateToHome:()->Unit
 
 ) {
     Scaffold(
@@ -51,24 +54,9 @@ fun AuthenticationScreen(
         onDialogDismissed = {message-> onDialogDismast(message)}
     )
 
-//            val credential = GoogleAuthProvider.getCredential(tokenId, null)
-//            FirebaseAuth.getInstance().signInWithCredential(credential)
-//                .addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        onSuccessfulFirebaseSignIn(tokenId)
-//                    } else {
-//                        task.exception?.let { it -> onFailedFirebaseSignIn(it) }
-//                    }
-//                }
-//        },
-//        onDialogDismissed = { message ->
-//            onDialogDismissed(message)
-//        }
-//    )
-
-//    LaunchedEffect(key1 = authenticated) {
-//        if (authenticated) {
-//            navigateToHome()
-//        }
-//    }
+    LaunchedEffect(key1 = authenticated) {
+        if (authenticated) {
+            navigateToHome()
+        }
+    }
 }

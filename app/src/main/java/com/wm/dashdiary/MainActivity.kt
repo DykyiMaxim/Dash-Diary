@@ -1,7 +1,6 @@
 package com.wm.dashdiary
 
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.wm.dashdiary.navigation.Screen
 import com.wm.dashdiary.navigation.SetupNavGraph
+import io.realm.kotlin.mongodb.App
 
 
 class MainActivity : ComponentActivity() {
@@ -26,10 +26,15 @@ class MainActivity : ComponentActivity() {
         setContent {
                 val navController = rememberNavController()
                 SetupNavGraph(
-                    startDestinatio = Screen.Authentication.route,
+                    startDestinatio = getStartDestination(),
                     navController = navController
                 )
         }
     }
 }
 
+private fun getStartDestination():String{
+    val user = App.Companion.create(BuildConfig.AtlasAppId).currentUser
+    return if(user!=null&&user.loggedIn) Screen.Home.route
+    else Screen.Authentication.route
+}
