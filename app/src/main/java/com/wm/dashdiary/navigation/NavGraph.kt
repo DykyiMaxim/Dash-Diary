@@ -14,6 +14,7 @@ import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
+import java.lang.Exception
 
 @Composable
 fun SetupNavGraph(startDestinatio:String,navController:NavHostController){
@@ -39,6 +40,20 @@ fun SetupNavGraph(startDestinatio:String,navController:NavHostController){
                  oneTapState.open()
                  viewModel.setLoading(true)
                                },
+             onTokenIdReceives ={tokenId->
+
+                 viewModel.SignInWithAtlas(
+                     tokenId = tokenId,
+                     onSuccess = {if(it){
+                         messageBarState.addSuccess("Successfully authenticated")}
+                         viewModel.setLoading(false)
+                                 },
+                     onError = {messageBarState.addError(it)}
+                 )
+
+                 messageBarState.addSuccess("Successfully authenticated")
+                                },
+             onDialogDismast ={message-> messageBarState.addError(Exception(message))}
 
              )
 

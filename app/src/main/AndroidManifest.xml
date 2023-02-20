@@ -8,12 +8,13 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo"
         android:supportsRtl="true"
+        android:label="Dash Diary"
         android:theme="@style/Theme.DashDiary"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.SplashScreen">
+            android:theme="@style/Theme.DashDiary">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

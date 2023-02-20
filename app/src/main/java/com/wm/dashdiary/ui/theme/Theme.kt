@@ -3,6 +3,7 @@ package com.wm.dashdiary.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
@@ -93,6 +94,7 @@ fun DashDiaryAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = typography,
         content = content
     )
 }
