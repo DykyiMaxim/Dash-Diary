@@ -1,6 +1,7 @@
 package com.wm.dashdiary
 
 import android.os.Bundle
+import android.view.Window
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.wm.dashdiary.navigation.Screen
 import com.wm.dashdiary.navigation.SetupNavGraph
+import com.wm.dashdiary.ui.theme.DashDiaryAppTheme
 import io.realm.kotlin.mongodb.App
 
 
@@ -18,17 +20,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-        )
+        actionBar?.hide();
+
+
 
         setContent {
+            DashDiaryAppTheme {
                 val navController = rememberNavController()
                 SetupNavGraph(
                     startDestinatio = getStartDestination(),
                     navController = navController
                 )
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ class AuthenticationViewModel:ViewModel() {
     }
     fun SignInWithAtlas(
         tokenId:String,
-        onSuccess:(Boolean)->Unit,
+        onSuccess:()->Unit,
         onError:(Exception)->Unit){
         viewModelScope.launch {
             try {
@@ -32,9 +32,11 @@ class AuthenticationViewModel:ViewModel() {
                     ).loggedIn
                 }
                 withContext(Dispatchers.Main){
-                    onSuccess(result)
-                    delay(600)
-                    Authenticated.value=true
+                    if(result) {
+                        onSuccess()
+                        delay(600)
+                        Authenticated.value = true
+                    }
                 }
 
             }catch (e:Exception){

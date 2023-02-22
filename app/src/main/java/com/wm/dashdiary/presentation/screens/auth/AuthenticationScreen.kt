@@ -11,10 +11,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import com.stevdzasan.messagebar.ContentWithMessageBar
 import com.stevdzasan.messagebar.MessageBarState
 import com.stevdzasan.onetap.OneTapSignInState
 import com.stevdzasan.onetap.OneTapSignInWithGoogle
+import com.wm.dashdiary.R
 
 @ExperimentalMaterial3Api
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -32,11 +35,15 @@ fun AuthenticationScreen(
 ) {
     Scaffold(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding(),
         content = {
-            ContentWithMessageBar(messageBarState = messageBarState) {
+            ContentWithMessageBar(
+                successContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                errorContainerColor = MaterialTheme.colorScheme.errorContainer,
+                messageBarState = messageBarState
+            ) {
                 AuthenticationContent(
                     loadingState = loadingState,
                     onButtonClicked = onButtonClicked

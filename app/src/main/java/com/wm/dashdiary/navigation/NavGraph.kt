@@ -60,9 +60,10 @@ fun SetupNavGraph(startDestinatio:String,navController:NavHostController){
              onTokenIdReceives ={tokenId->
                  viewModel.SignInWithAtlas(
                      tokenId = tokenId,
-                     onSuccess = {if(it){
-                         messageBarState.addSuccess("Successfully authenticated")}
-                         viewModel.setLoading(false) },
+                     onSuccess = {
+                         messageBarState.addSuccess("Successfully authenticated")
+                         viewModel.setLoading(false)
+                     },
 
                      onError = {messageBarState.addError(it)})
                       messageBarState.addSuccess("Successfully authenticated")
