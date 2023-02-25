@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(
-    onMenuClicked:()->Unit)
-{
+    onMenuClicked: () -> Unit
+) {
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = onMenuClicked) {
@@ -21,7 +21,7 @@ fun HomeTopBar(
                 )
             }
         },
-        title = { Text(text = "Diary")},
+        title = { Text(text = "Diary") },
         actions = {
             IconButton(onClick = onMenuClicked) {
                 Icon(
