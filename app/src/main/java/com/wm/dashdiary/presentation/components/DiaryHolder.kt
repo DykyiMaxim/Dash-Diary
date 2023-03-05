@@ -1,14 +1,12 @@
 package com.wm.dashdiary.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -38,6 +36,8 @@ import java.util.*
 fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
     var componentHeight by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
+    var GalleryOpend by remember { mutableStateOf(false)
+    }
     Row(modifier = Modifier
         .clickable(
             indication = null,
@@ -70,6 +70,21 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
                     maxLines = 6,
                     overflow = TextOverflow.Ellipsis
                 )
+                if(diary.Images.isNotEmpty()){
+                    ShowGalleryButton(
+                        galleryOpened =GalleryOpend ,
+                        onCLick ={
+                            GalleryOpend = !GalleryOpend
+                        }
+                    )
+                }
+                AnimatedVisibility(visible = GalleryOpend) {
+                    Column(Modifier.padding(all = 14.dp)) {
+                        Gallery(images = diary.Images)
+                    }
+
+                    
+                }
 
             }
 
@@ -157,5 +172,21 @@ fun DateHeader(localDate: LocalDate) {
         }
 
     }
+}
+
+@Composable
+fun ShowGalleryButton(
+    galleryOpened: Boolean,
+    onCLick: () -> Unit
+) {
+    TextButton(onClick = onCLick) {
+        Text(
+            text = if (galleryOpened) "Hide Gallery" else "Show Gallery",
+            style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)
+        )
+
+
+    }
+
 }
 
