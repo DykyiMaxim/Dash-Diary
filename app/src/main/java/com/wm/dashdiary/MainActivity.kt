@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     private var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        installSplashScreen() 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         actionBar?.hide();
 

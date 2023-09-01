@@ -71,6 +71,7 @@ enum class Mood(
     ),
     Awful(
         icon = R.drawable.awful,
+
         contentColor = Color.Black,
         containerColor = AwfulColor
     ),

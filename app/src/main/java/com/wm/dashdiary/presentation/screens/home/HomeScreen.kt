@@ -92,3 +92,7 @@ fun NavigationDrawer(
         content = content,
     )
 }
+@Composable
+fun EmptyPage(
+    title:String = "Empty",
+    subtitle:String = "Write some"){}
