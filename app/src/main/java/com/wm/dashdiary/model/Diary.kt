@@ -7,9 +7,9 @@ import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-class Diary:RealmObject {
+ open class Diary:RealmObject {
     @PrimaryKey
-    var Id: ObjectId = ObjectId.create()
+    var _id: ObjectId = ObjectId.create()
     var OwnerId: String = ""
     var title: String = ""
     var mood:String=Mood.Neutral.name
