@@ -27,7 +27,7 @@ fun HomeScreen(
     ) {
         Scaffold(
             topBar = { HomeTopBar(onMenuClicked = onMenuClicked) },
-            content = {},
+            content = { HomeContent(diariesNotes = mapOf(), onClick = {})},
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = navigateToWrite,
@@ -92,7 +92,4 @@ fun NavigationDrawer(
         content = content,
     )
 }
-@Composable
-fun EmptyPage(
-    title:String = "Empty",
-    subtitle:String = "Write some"){}
+
