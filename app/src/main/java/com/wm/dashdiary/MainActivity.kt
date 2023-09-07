@@ -1,8 +1,6 @@
 package com.wm.dashdiary
 
 import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -18,9 +16,9 @@ class MainActivity : ComponentActivity() {
     private var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen() 
+        installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        actionBar?.hide();
+        actionBar?.hide()
 
 
 
@@ -28,7 +26,7 @@ class MainActivity : ComponentActivity() {
             DashDiaryAppTheme {
                 val navController = rememberNavController()
                 SetupNavGraph(
-                    startDestinatio = getStartDestination(),
+                    startDestination = getStartDestination(),
                     navController = navController
                 )
             }
@@ -36,8 +34,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private fun getStartDestination():String{
+private fun getStartDestination(): String {
     val user = App.Companion.create(BuildConfig.AtlasAppId).currentUser
-    return if(user!=null&&user.loggedIn) Screen.Home.route
+    return if (user != null && user.loggedIn) Screen.Home.route
     else Screen.Authentication.route
 }

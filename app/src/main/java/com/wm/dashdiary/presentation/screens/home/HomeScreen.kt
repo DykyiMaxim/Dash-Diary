@@ -11,11 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-@OptIn(ExperimentalMaterial3Api::class)
+import com.wm.dashdiary.data.repository.Diaries
+import com.wm.dashdiary.data.repository.RequestState
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 
 @Composable
 fun HomeScreen(
+    diaries: Diaries,
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     navigateToWrite: () -> Unit,
@@ -27,7 +30,32 @@ fun HomeScreen(
     ) {
         Scaffold(
             topBar = { HomeTopBar(onMenuClicked = onMenuClicked) },
-            content = { HomeContent(diariesNotes = mapOf(), onClick = {})},
+            content = {
+                when (diaries) {
+                    is RequestState.Success -> {
+                        HomeContent(diariesNotes = diaries.data, onClick = { }, paddingValues = it)
+                    }
+
+                    is RequestState.Error -> {
+                        EmptyPage(
+                            title = "Error",
+                            subtitle = "${diaries.error.message}"
+                        )
+                    }
+
+                    is RequestState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+
+                        }
+                    }
+
+                    else -> {}
+                }
+            },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = navigateToWrite,
@@ -69,7 +97,7 @@ fun NavigationDrawer(
 
                         )
                 }
-                Divider()
+                HorizontalDivider()
                 Spacer(modifier = Modifier.padding(12.dp))
                 NavigationDrawerItem(
                     label = {

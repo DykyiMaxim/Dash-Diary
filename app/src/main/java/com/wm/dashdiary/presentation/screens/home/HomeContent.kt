@@ -1,63 +1,65 @@
 package com.wm.dashdiary.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.presentation.components.DiaryHolder
-
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
-    diariesNotes:Map<LocalDate,List<Diary>>,
-    onClick: (String) -> Unit
-){
-    if(diariesNotes.isNotEmpty()){
-        LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)){
-            diariesNotes.forEach {(localDate,diaries) ->
-                stickyHeader (key = localDate){
+    diariesNotes: Map<LocalDate, List<Diary>>,
+    onClick: (String) -> Unit,
+    paddingValues: PaddingValues
+) {
+    if (diariesNotes.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .padding(top = paddingValues.calculateTopPadding())
+        ) {
+            diariesNotes.forEach { (localDate, diaries) ->
+                stickyHeader(key = localDate) {
                     DateHeader(localDate = localDate)
                 }
-                items(items = diaries,key = {it._id}){
+                items(items = diaries, key = { it._id.toString() }) {
                     DiaryHolder(diary = it, onClick = onClick)
 
                 }
             }
 
         }
-    }else{EmptyPage()}
+    } else {
+        EmptyPage()
+    }
 
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DateHeader(localDate:LocalDate){
-    Row(verticalAlignment = Alignment.CenterVertically){
+fun DateHeader(localDate: LocalDate) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = String.format("%02d",localDate.dayOfMonth),
+                text = String.format("%02d", localDate.dayOfMonth),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Light
                 )
             )
-            Text(text = localDate.dayOfWeek.toString().take(3),
+            Text(
+                text = localDate.dayOfWeek.toString().take(3),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Light
@@ -91,11 +93,12 @@ fun DateHeader(localDate:LocalDate){
     }
 
 }
+
 @Composable
 fun EmptyPage(
-    title:String = "Empty Diary",
-    subtitle:String  = "Write Something"
-){
+    title: String = "Empty Diary",
+    subtitle: String = "Write Something"
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
