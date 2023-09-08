@@ -10,20 +10,20 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.stevdzasan.messagebar.rememberMessageBarState
-import com.wm.dashdiary.BuildConfig
 import com.stevdzasan.onetap.rememberOneTapSignInState
+import com.wm.dashdiary.BuildConfig
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
 import com.wm.dashdiary.presentation.screens.home.HomeScreen
+import com.wm.dashdiary.presentation.screens.home.HomeViewModel
 import io.realm.kotlin.mongodb.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 @Composable
-fun SetupNavGraph(startDestinatio: String, navController: NavHostController) {
-    NavHost(navController = navController, startDestinatio) {
+fun SetupNavGraph(startDestination: String, navController: NavHostController) {
+    NavHost(navController = navController, startDestination) {
         authenticationRout(NavigateToHome = {
             navController.popBackStack()
             navController.navigate(Screen.Home.route)
@@ -86,10 +86,13 @@ fun NavGraphBuilder.HomeScreenRout(
     NavigateToAuth: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
+        val viewModel: HomeViewModel = viewModel()
+        val diaries by viewModel.diaries
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         var signOutDialogOpen by remember { mutableStateOf(false) }
         HomeScreen(
+            diaries = diaries,
             drawerState = drawerState,
             onMenuClicked = { scope.launch { drawerState.open() } },
             onSignOutClicked = { signOutDialogOpen = true },
