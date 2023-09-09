@@ -1,6 +1,7 @@
 package com.wm.dashdiary.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.presentation.components.DiaryHolder
@@ -28,6 +30,9 @@ fun HomeContent(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
                 .padding(top = paddingValues.calculateTopPadding())
+                .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(start = paddingValues.calculateStartPadding(LayoutDirection.Ltr))
+                .padding(end = paddingValues.calculateEndPadding(LayoutDirection.Ltr))
         ) {
             diariesNotes.forEach { (localDate, diaries) ->
                 stickyHeader(key = localDate) {
@@ -49,7 +54,14 @@ fun HomeContent(
 
 @Composable
 fun DateHeader(localDate: LocalDate) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier =
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.onSurface)
+            .padding(vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(horizontalAlignment = Alignment.End) {
             Text(
                 text = String.format("%02d", localDate.dayOfMonth),
@@ -80,7 +92,7 @@ fun DateHeader(localDate: LocalDate) {
 
             Text(
                 text = "${localDate.year}",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Light
