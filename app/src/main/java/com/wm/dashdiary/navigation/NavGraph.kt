@@ -17,6 +17,7 @@ import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
 import com.wm.dashdiary.presentation.screens.home.HomeScreen
 import com.wm.dashdiary.presentation.screens.home.HomeViewModel
+import com.wm.dashdiary.presentation.screens.write.WriteScreen
 import io.realm.kotlin.mongodb.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +47,9 @@ fun SetupNavGraph(
             },
             onDataLoaded = onDataLoaded
         )
-        WriteRout()
+        WriteRout(
+            onBackPressed = { navController.popBackStack() }
+        )
     }
 }
 
@@ -139,7 +142,7 @@ fun NavGraphBuilder.HomeScreenRout(
     }
 }
 
-fun NavGraphBuilder.WriteRout() {
+fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
     composable(
         route = Screen.Write.route,
         arguments = listOf(navArgument(name = "WritingScreenIdNav") {
@@ -149,5 +152,6 @@ fun NavGraphBuilder.WriteRout() {
         })
 
     ) {
+        WriteScreen(onBackPressed)
     }
 }

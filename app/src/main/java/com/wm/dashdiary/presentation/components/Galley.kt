@@ -41,7 +41,7 @@ fun Gallery(
 
         val remainingImages = remember {
             derivedStateOf {
-                images.size.minus(NumberOfVisibleImages.value)
+                images.size - NumberOfVisibleImages.value
             }
         }
         Row {
