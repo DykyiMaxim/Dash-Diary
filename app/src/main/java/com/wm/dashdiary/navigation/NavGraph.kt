@@ -13,6 +13,7 @@ import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.wm.dashdiary.BuildConfig
 import com.wm.dashdiary.data.repository.RequestState
+import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
 import com.wm.dashdiary.presentation.screens.home.HomeScreen
@@ -152,6 +153,10 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
         })
 
     ) {
-        WriteScreen(onBackPressed)
+        WriteScreen(
+            onBackPressed = onBackPressed,
+            onDeleteConfirm = {},
+            selectDiary = Diary().apply { title = "Test text" }
+        )
     }
 }
