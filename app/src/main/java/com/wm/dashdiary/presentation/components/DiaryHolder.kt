@@ -58,7 +58,7 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
         .clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() })
-        { onClick(diary._id.toString()) }) {
+        { onClick(diary._id.toHexString()) }) {
 
         Spacer(modifier = Modifier.width(14.dp))
         Surface(
@@ -152,12 +152,14 @@ fun DiaryHeader(moodName: String, time: Instant, title: String) {
                 color = mood.contentColor,
                 style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize)
             )
-            Spacer(modifier = Modifier.width(90.dp))
+            Spacer(Modifier.weight(1f))
+
             Text(
                 text = formatter.format(time),
                 color = mood.contentColor,
                 style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize)
             )
+
         }
 
     }
