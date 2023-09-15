@@ -16,7 +16,7 @@ import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.wm.dashdiary.BuildConfig
 import com.wm.dashdiary.data.repository.RequestState
-import com.wm.dashdiary.model.Diary
+import com.wm.dashdiary.model.Mood
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
 import com.wm.dashdiary.presentation.screens.home.HomeScreen
@@ -167,6 +167,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
         val ViewModel: WriteViewModel = viewModel()
         val uiSate = ViewModel.uiSate
         val PagerSate = rememberPagerState()
+        val PageNumber by remember{ derivedStateOf { PagerSate.currentPage }}
 
         LaunchedEffect(key1 = uiSate) {
             Log.d("TAG", "${uiSate.selectDiaryId}")
@@ -179,7 +180,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onTitleChange = { ViewModel.setTitle(it) },
             onDescriptionChange = { ViewModel.setDescription(it) },
             onDeleteConfirm = {},
-            selectDiary = Diary().apply { title = "Test text" }
+            moodName = { Mood.values()[PageNumber].name}
         )
     }
 }

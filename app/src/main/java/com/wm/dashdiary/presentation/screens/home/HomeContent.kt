@@ -1,7 +1,6 @@
 package com.wm.dashdiary.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -58,7 +57,6 @@ fun DateHeader(localDate: LocalDate) {
         modifier =
         Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.onSurface)
             .padding(vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
