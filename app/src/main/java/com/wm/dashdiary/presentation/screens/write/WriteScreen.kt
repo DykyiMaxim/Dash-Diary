@@ -9,18 +9,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WriteScreen(
     uiSate: UiSate,
+    moodName: ()->String,
     PagerSate: PagerState,
     onBackPressed: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    selectDiary: Diary?,
     onDeleteConfirm: () -> Unit
 ) {
     LaunchedEffect(key1 = uiSate.mood) {
@@ -30,8 +29,9 @@ fun WriteScreen(
         topBar = {
             WriteTopBar(
                 onBackPressed = onBackPressed,
-                selectDiary = selectDiary,
-                onDeleteConfirm = onDeleteConfirm
+                selectDiary = uiSate.selectedDiary,
+                onDeleteConfirm = onDeleteConfirm,
+                moodName = moodName
             )
         },
 

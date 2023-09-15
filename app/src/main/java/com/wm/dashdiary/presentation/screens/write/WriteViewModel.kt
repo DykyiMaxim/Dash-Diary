@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
+import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ class WriteViewModel(
                     .collect { diary ->
 
                         if (diary is RequestState.Success) {
+                            setSelectedDiary(diary.data)
                             setTitle(title = diary.data.title)
                             setDescription(description = diary.data.description)
                             setMood(mood = Mood.valueOf(diary.data.mood))
@@ -54,6 +56,9 @@ class WriteViewModel(
 
             }
         }
+    }
+    fun setSelectedDiary(diary:Diary){
+        uiSate = uiSate.copy(selectedDiary = diary)
     }
 
     fun setTitle(title: String) {
@@ -71,6 +76,7 @@ class WriteViewModel(
 
 data class UiSate(
     val selectDiaryId: String? = null,
+    val selectedDiary: Diary? = null,
     val title: String = "",
     val description: String = "",
     val mood: Mood = Mood.Neutral

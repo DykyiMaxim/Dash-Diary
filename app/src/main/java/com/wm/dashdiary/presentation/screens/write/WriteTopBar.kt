@@ -24,15 +24,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.wm.dashdiary.mapper.toInstant
 import com.wm.dashdiary.model.Diary
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WriteTopBar(
     selectDiary: Diary?,
+    moodName: () ->String,
     onBackPressed: () -> Unit,
     onDeleteConfirm: () -> Unit
 ) {
+    val currentDate by remember { mutableStateOf(LocalDate.now())}
+    val currentTime by remember { mutableStateOf(LocalTime.now())}
+
+    val formattedDate = remember(currentDate){
+        DateTimeFormatter
+        .ofPattern("dd MMM yyyy")
+        .format(currentDate)
+    }
+    val formattedTime = remember(currentTime){
+        DateTimeFormatter
+        .ofPattern("hh:mm a")
+        .format(currentTime)
+    }
+
+    val selectedDiaryDateTime = remember(selectDiary) {
+        if(selectDiary != null) {
+            SimpleDateFormat("dd MMM yyyy,hh:mm a", Locale.getDefault())
+                .format(Date.from(selectDiary.date.toInstant()))
+        }else{
+            "Unknown"
+        }
+    }
     CenterAlignedTopAppBar(navigationIcon = {
         IconButton(onClick = onBackPressed) {
             Icon(
@@ -42,16 +72,16 @@ fun WriteTopBar(
     }, title = {
         Column {
             Text(
-                modifier = Modifier.fillMaxWidth(), text = "Happy", style = TextStyle(
+                modifier = Modifier.fillMaxWidth(), text = moodName(), style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold
                 ), textAlign = TextAlign.Center
             )
             Text(
-                modifier = Modifier.fillMaxWidth(), text = "Soma Date", style = TextStyle(
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-
-                    ), textAlign = TextAlign.Center
+                modifier = Modifier.fillMaxWidth(),
+                text = if(selectDiary !=null) selectedDiaryDateTime else "$formattedDate , $formattedTime",
+                style = TextStyle(
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize,), textAlign = TextAlign.Center
             )
 
         }

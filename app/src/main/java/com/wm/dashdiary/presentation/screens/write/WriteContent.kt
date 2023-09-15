@@ -81,8 +81,8 @@ fun WriteContent(
                 onValueChange = onTitleChange,
                 placeholder = { Text(text = "Title") },
                 colors = TextFieldDefaults.colors(
-                    //containerColor = Color.Transparent
                     focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
