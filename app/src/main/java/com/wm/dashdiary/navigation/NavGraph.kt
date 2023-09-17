@@ -180,7 +180,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onDeleteConfirm = {},
             moodName = { Mood.values()[PageNumber].name },
             onSaveClicked = {
-                ViewModel.insertDiary(diary = it.apply { mood = Mood.values()[PageNumber].name },
+                ViewModel.upsertDiary(diary = it.apply { mood = Mood.values()[PageNumber].name },
                     onSuccess = { onBackPressed() },
                     onError = { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

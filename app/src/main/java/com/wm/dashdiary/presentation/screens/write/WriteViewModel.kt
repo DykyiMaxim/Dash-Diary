@@ -61,28 +61,63 @@ class WriteViewModel(
         }
     }
 
-    fun insertDiary(
+    private suspend fun insertDiary(
         diary: Diary,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = MongoDB.insertDiary(diary = diary.apply {
-                if (uiSate.updatedDateTime != null) {
-                    date = uiSate.updatedDateTime!!
-                }
-            })
-            if (result is RequestState.Success) {
 
-                withContext(Dispatchers.Main) {
-                    onSuccess()
-                }
-            } else if (result is RequestState.Error) {
-                withContext(Dispatchers.Main) {
-                    onError(result.error.message.toString())
-                }
+        val result = MongoDB.insertDiary(diary = diary.apply {
+            if (uiSate.updatedDateTime != null) {
+                date = uiSate.updatedDateTime!!
+            }
+        })
+        if (result is RequestState.Success) {
+
+            withContext(Dispatchers.Main) {
+                onSuccess()
+            }
+        } else if (result is RequestState.Error) {
+            withContext(Dispatchers.Main) {
+                onError(result.error.message.toString())
             }
         }
+    }
+
+    private suspend fun updateDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val result = MongoDB.updateDiary(diary.apply {
+            _id = ObjectId.invoke(uiSate.selectDiaryId!!)
+            date = uiSate.selectedDiary!!.date
+        })
+        if (result is RequestState.Success) {
+            withContext(Dispatchers.Main) {
+                onSuccess
+            }
+        } else if (result is RequestState.Error) {
+            withContext(Dispatchers.Main) {
+                onError(result.error.message.toString())
+            }
+        }
+
+    }
+
+    fun upsertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (uiSate.selectDiaryId != null) {
+                updateDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            } else {
+                insertDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            }
+        }
+
     }
 
     fun setSelectedDiary(diary: Diary) {
