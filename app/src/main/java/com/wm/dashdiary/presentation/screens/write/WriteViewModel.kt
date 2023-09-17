@@ -10,8 +10,11 @@ import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
+import io.realm.kotlin.types.RealmInstant
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mongodb.kbson.ObjectId
 
 class WriteViewModel(
@@ -37,7 +40,7 @@ class WriteViewModel(
     private fun getSelectedDiary() {
         if (uiSate.selectDiaryId != null) {
             viewModelScope.launch {
-                MongoDB.GetDiaryById(ObjectId.invoke(uiSate.selectDiaryId!!))
+                MongoDB.getDiaryById(ObjectId.invoke(uiSate.selectDiaryId!!))
                     .catch {
                         emit(RequestState.Error(Exception("Diary is already deleted.")))
                     }
@@ -57,7 +60,32 @@ class WriteViewModel(
             }
         }
     }
-    fun setSelectedDiary(diary:Diary){
+
+    fun insertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = MongoDB.insertDiary(diary = diary.apply {
+                if (uiSate.updatedDateTime != null) {
+                    date = uiSate.updatedDateTime!!
+                }
+            })
+            if (result is RequestState.Success) {
+
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                }
+            } else if (result is RequestState.Error) {
+                withContext(Dispatchers.Main) {
+                    onError(result.error.message.toString())
+                }
+            }
+        }
+    }
+
+    fun setSelectedDiary(diary: Diary) {
         uiSate = uiSate.copy(selectedDiary = diary)
     }
 
@@ -79,5 +107,6 @@ data class UiSate(
     val selectedDiary: Diary? = null,
     val title: String = "",
     val description: String = "",
-    val mood: Mood = Mood.Neutral
+    val mood: Mood = Mood.Neutral,
+    val updatedDateTime: RealmInstant? = null
 )

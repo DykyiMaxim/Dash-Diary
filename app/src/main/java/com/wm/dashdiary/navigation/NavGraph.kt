@@ -1,11 +1,12 @@
 package com.wm.dashdiary.navigation
 
 import DisplayAlertDialog
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
@@ -167,11 +168,8 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
         val ViewModel: WriteViewModel = viewModel()
         val uiSate = ViewModel.uiSate
         val PagerSate = rememberPagerState()
-        val PageNumber by remember{ derivedStateOf { PagerSate.currentPage }}
-
-        LaunchedEffect(key1 = uiSate) {
-            Log.d("TAG", "${uiSate.selectDiaryId}")
-        }
+        val PageNumber by remember { derivedStateOf { PagerSate.currentPage } }
+        val context = LocalContext.current
 
         WriteScreen(
             uiSate = uiSate,
@@ -180,7 +178,15 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onTitleChange = { ViewModel.setTitle(it) },
             onDescriptionChange = { ViewModel.setDescription(it) },
             onDeleteConfirm = {},
-            moodName = { Mood.values()[PageNumber].name}
+            moodName = { Mood.values()[PageNumber].name },
+            onSaveClicked = {
+                ViewModel.insertDiary(diary = it.apply { mood = Mood.values()[PageNumber].name },
+                    onSuccess = { onBackPressed() },
+                    onError = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
         )
     }
 }

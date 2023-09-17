@@ -1,5 +1,6 @@
 package com.wm.dashdiary.presentation.screens.write
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,18 +31,22 @@ import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WriteContent(
+    uiSate: UiSate,
     PagerSate: PagerState,
     title: String,
     onTitleChange: (String) -> Unit,
     description: String,
     onDescriptionChange: (String) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onSaveClicked: (Diary) -> Unit
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -120,7 +125,19 @@ fun WriteContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
-                onClick = { /*TODO*/ },
+                onClick = {
+                    if (uiSate.title.isNotEmpty() && uiSate.description.isNotEmpty()) {
+                        onSaveClicked(
+                            Diary().apply {
+                                this.title = uiSate.title
+                                this.description = uiSate.description
+                            }
+                        )
+                    } else {
+                        Toast.makeText(context, "Your diary still blank", Toast.LENGTH_SHORT).show()
+                    }
+
+                },
                 shape = Shapes().small
             ) {
                 Text(text = "Save")
