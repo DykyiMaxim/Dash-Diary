@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
+import com.wm.dashdiary.mapper.toRealmInstant
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
 import io.realm.kotlin.types.RealmInstant
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.mongodb.kbson.ObjectId
+import java.time.ZonedDateTime
 
 class WriteViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -91,7 +93,11 @@ class WriteViewModel(
     ) {
         val result = MongoDB.updateDiary(diary.apply {
             _id = ObjectId.invoke(uiSate.selectDiaryId!!)
-            date = uiSate.selectedDiary!!.date
+            date = if (uiSate.updatedDateTime != null) {
+                uiSate.updatedDateTime!!
+            } else {
+                uiSate.selectedDiary!!.date
+            }
         })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
@@ -134,6 +140,10 @@ class WriteViewModel(
 
     fun setMood(mood: Mood) {
         uiSate = uiSate.copy(mood = mood)
+    }
+
+    fun setDateTime(zonedDateTime: ZonedDateTime) {
+        uiSate = uiSate.copy(updatedDateTime = zonedDateTime.toInstant().toRealmInstant())
     }
 }
 

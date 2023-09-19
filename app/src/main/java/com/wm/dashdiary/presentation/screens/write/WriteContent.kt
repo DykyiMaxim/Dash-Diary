@@ -44,7 +44,8 @@ fun WriteContent(
     description: String,
     onDescriptionChange: (String) -> Unit,
     paddingValues: PaddingValues,
-    onSaveClicked: (Diary) -> Unit
+    onSaveClicked: (Diary) -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -133,6 +134,8 @@ fun WriteContent(
                                 this.description = uiSate.description
                             }
                         )
+                        onBackPressed()
+
                     } else {
                         Toast.makeText(context, "Your diary still blank", Toast.LENGTH_SHORT).show()
                     }

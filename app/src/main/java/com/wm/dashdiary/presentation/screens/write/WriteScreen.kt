@@ -11,6 +11,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -22,7 +23,8 @@ fun WriteScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onDeleteConfirm: () -> Unit,
-    onSaveClicked: (Diary) -> Unit
+    onSaveClicked: (Diary) -> Unit,
+    onUpdatedDateTime: (ZonedDateTime) -> Unit,
 ) {
     LaunchedEffect(key1 = uiSate.mood) {
         PagerSate.scrollToPage(Mood.valueOf(uiSate.mood.name).ordinal)
@@ -33,7 +35,8 @@ fun WriteScreen(
                 onBackPressed = onBackPressed,
                 selectDiary = uiSate.selectedDiary,
                 onDeleteConfirm = onDeleteConfirm,
-                moodName = moodName
+                moodName = moodName,
+                onUpdatedDateTime = onUpdatedDateTime
             )
         },
 
@@ -52,7 +55,8 @@ fun WriteScreen(
                 onDescriptionChange = onDescriptionChange,
                 paddingValues = it,
                 uiSate = uiSate,
-                onSaveClicked = onSaveClicked
+                onSaveClicked = onSaveClicked,
+                onBackPressed = onBackPressed
             )
 
         }

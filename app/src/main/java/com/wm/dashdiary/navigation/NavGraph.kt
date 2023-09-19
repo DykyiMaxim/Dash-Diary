@@ -186,7 +186,8 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 )
-            }
+            },
+            onUpdatedDateTime = { ViewModel.setDateTime(zonedDateTime = it) },
         )
     }
 }
