@@ -33,14 +33,13 @@ object MongoDB : MongoRepository {
         user = app.currentUser
 
         if (user != null) {
-            val config = SyncConfiguration.Builder(user!!, setOf(Diary::class))
-                .initialSubscriptions { sub ->
+            val config =
+                SyncConfiguration.Builder(user!!, setOf(Diary::class)).initialSubscriptions { sub ->
                     add(
                         query = sub.query<Diary>(query = "ownerId == $0", user!!.id),
                         name = "User's Diaries"
                     )
-                }
-                .build()
+                }.build()
             realm = Realm.open(config)
         }
     }
@@ -50,16 +49,10 @@ object MongoDB : MongoRepository {
         return if (user != null) {
             try {
                 realm.query<Diary>("ownerId == $0", user!!.id)
-                    .sort(property = "date", sortOrder = Sort.DESCENDING)
-                    .asFlow()
-                    .map { result ->
-                        RequestState.Success(
-                            data = result.list.groupBy {
-                                it.date.toInstant()
-                                    .atZone(ZoneId.systemDefault())
-                                    .toLocalDate()
-                            }
-                        )
+                    .sort(property = "date", sortOrder = Sort.DESCENDING).asFlow().map { result ->
+                        RequestState.Success(data = result.list.groupBy {
+                            it.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                        })
                     }
             } catch (e: Exception) {
                 flow { emit(RequestState.Error(e)) }
@@ -106,6 +99,8 @@ object MongoDB : MongoRepository {
             realm.write {
                 val queriedDiary = query<Diary>(query = "_id == $0", diary._id).first().find()
                 if (queriedDiary != null) {
+
+
                     queriedDiary.title = diary.title
                     queriedDiary.description = diary.description
                     queriedDiary.mood = diary.mood
@@ -121,6 +116,29 @@ object MongoDB : MongoRepository {
             RequestState.Error(UserNotAuthenticatedException())
         }
 
+    }
+
+    override suspend fun deleteDiary(id: ObjectId): RequestState<Diary> {
+        return if (user != null) {
+            realm.write {
+                val diary = query<Diary>(
+                    query = "_id == $0 AND ownerId == $1", id, user!!.id
+                ).first().find()
+                if (diary != null) {
+                    try {
+                        delete(diary)
+                        RequestState.Success(data = diary)
+                    } catch (e: Exception) {
+                        RequestState.Error(e)
+
+                    }
+                } else {
+                    RequestState.Error(Exception("Diary didn't exist"))
+                }
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
+        }
     }
 }
 

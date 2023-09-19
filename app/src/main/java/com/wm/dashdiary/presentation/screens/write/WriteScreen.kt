@@ -53,10 +53,8 @@ fun WriteScreen(
                 onTitleChange = onTitleChange,
                 description = uiSate.description,
                 onDescriptionChange = onDescriptionChange,
-                paddingValues = it,
                 uiSate = uiSate,
-                onSaveClicked = onSaveClicked,
-                onBackPressed = onBackPressed
+                onSaveClicked = onSaveClicked
             )
 
         }

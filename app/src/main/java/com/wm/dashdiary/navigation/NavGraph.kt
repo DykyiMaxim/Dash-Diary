@@ -177,11 +177,21 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onBackPressed = onBackPressed,
             onTitleChange = { ViewModel.setTitle(it) },
             onDescriptionChange = { ViewModel.setDescription(it) },
-            onDeleteConfirm = {},
+            onDeleteConfirm = {
+                ViewModel.deleteDiary(
+                    onSuccess = {
+                        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                        onBackPressed()
+                    },
+                    onError = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
             moodName = { Mood.values()[PageNumber].name },
             onSaveClicked = {
                 ViewModel.upsertDiary(diary = it.apply { mood = Mood.values()[PageNumber].name },
-                    onSuccess = { onBackPressed() },
+                    onSuccess = onBackPressed,
                     onError = { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
