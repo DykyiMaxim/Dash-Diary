@@ -4,9 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
@@ -25,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.wm.dashdiary.ui.theme.Elevation
 import kotlin.math.max
 
 @Composable
@@ -104,5 +110,31 @@ fun LastImageOverLay(
             color = MaterialTheme.colorScheme.primaryContainer
         )
 
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun AddImageButton(
+    imageSize: Dp,
+    imageShape: CornerBasedShape,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .size(imageSize)
+            .clip(shape = imageShape),
+        onClick = onClick,
+        tonalElevation = Elevation.level1
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Icon",
+            )
+        }
     }
 }
