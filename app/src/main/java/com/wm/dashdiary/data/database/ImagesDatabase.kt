@@ -3,6 +3,7 @@ package com.wm.dashdiary.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.wm.dashdiary.data.database.entity.ImageToUpload
+import com.wm.dashdiary.data.database.entity.ImageToDelete
 
 
 @Database(
