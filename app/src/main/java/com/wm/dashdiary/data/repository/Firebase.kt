@@ -2,7 +2,10 @@ package com.wm.dashdiary.data.repository
 
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storageMetadata
+import com.wm.dashdiary.data.database.entity.ImageToUpload
 
 class Firebase {
     fun fetchImagesFromFirebase(
@@ -28,4 +31,16 @@ class Firebase {
             }
         }
     }
+    fun retryUploadingImageToFirebase(
+        imageToUpload: ImageToUpload,
+        onSuccess: () -> Unit
+    ) {
+        val storage = FirebaseStorage.getInstance().reference
+        storage.child(imageToUpload.remoteImagePath).putFile(
+            imageToUpload.imageUri.toUri(),
+            storageMetadata { },
+            imageToUpload.sessionUri.toUri()
+        ).addOnSuccessListener { onSuccess() }
+    }
+
 }
