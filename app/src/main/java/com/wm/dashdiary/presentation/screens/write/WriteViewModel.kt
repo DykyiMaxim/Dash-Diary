@@ -1,15 +1,19 @@
 package com.wm.dashdiary.presentation.screens.write
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
 import com.wm.dashdiary.mapper.toRealmInstant
 import com.wm.dashdiary.model.Diary
+import com.wm.dashdiary.model.GalleryImage
+import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +26,7 @@ import java.time.ZonedDateTime
 class WriteViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    val galleryState = GalleryState()
     var uiSate by mutableStateOf(UiSate())
         private set
 
@@ -139,6 +144,16 @@ class WriteViewModel(
         }
 
 
+    }
+    fun addImage(image: Uri, imageType: String) {
+        val remoteImagePath = "images/${FirebaseAuth.getInstance().currentUser?.uid}/" +
+                "${image.lastPathSegment}-${System.currentTimeMillis()}.$imageType"
+        galleryState.addImage(
+            GalleryImage(
+                image = image,
+                remoteImagePath = remoteImagePath
+            )
+        )
     }
 
     fun setSelectedDiary(diary: Diary) {
