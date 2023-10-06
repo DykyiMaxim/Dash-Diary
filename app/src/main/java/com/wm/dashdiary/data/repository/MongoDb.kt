@@ -86,7 +86,6 @@ object MongoDB : MongoRepository {
         return if (user != null) {
             realm.write {
                 try {
-                    Log.d("TAAG",user!!.id)
                     val addedDiary = copyToRealm(diary.apply { ownerId = user!!.id })
                     RequestState.Success(data = addedDiary)
 
