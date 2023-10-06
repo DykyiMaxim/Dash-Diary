@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+   // id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'io.realm.kotlin'
     id 'com.google.gms.google-services'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -76,7 +77,7 @@ dependencies {
     implementation libs.firebase.storage.ktx
 
     //Room
-    kapt libs.room.compilerKapt
+    ksp libs.room.compilerKapt
     implementation libs.bundles.roombundle
 
     // Message Bar Compose
@@ -96,11 +97,11 @@ dependencies {
     // Coil
     implementation libs.staff.coil
     // Pager - Accompanist
-    implementation libs.staff.pagger
+    //implementation libs.staff.pagger
 
     //Dagger-Hilt
     implementation libs.hilt.core
-    kapt libs.hilt.coreKapt
+    ksp libs.hilt.coreKapt
     implementation libs.hilt.plugin.navCompose
 
     // Date-Time Picker

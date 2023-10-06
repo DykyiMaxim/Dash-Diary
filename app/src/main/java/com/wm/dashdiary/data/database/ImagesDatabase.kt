@@ -12,4 +12,6 @@ import com.wm.dashdiary.data.database.entity.ImageToDelete
     exportSchema = false
 )
 abstract class ImagesDatabase: RoomDatabase() {
+    abstract fun imageToUploadDao(): ImageToUploadDao
+    abstract fun imageToDeleteDao(): ImageToDeleteDao
 }

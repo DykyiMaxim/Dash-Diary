@@ -6,4 +6,5 @@ plugins {
     id 'io.realm.kotlin' version libs.versions.realmKotlin apply false
     id 'com.google.dagger.hilt.android' version libs.versions.daggerHilt apply false
     id 'com.google.gms.google-services' version libs.versions.gsmService apply false
+    id 'com.google.devtools.ksp' version '1.8.20-1.0.11' apply false
 }

@@ -2,6 +2,8 @@ package com.wm.dashdiary.navigation
 
 import DisplayAlertDialog
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -11,8 +13,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.wm.dashdiary.BuildConfig
@@ -153,7 +153,7 @@ fun NavGraphBuilder.HomeScreenRout(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
 
     composable(
@@ -167,7 +167,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
     ) {
         val ViewModel: WriteViewModel = viewModel()
         val uiSate = ViewModel.uiSate
-        val PagerSate = rememberPagerState()
+        val PagerSate = rememberPagerState(pageCount = { Mood.values().size})
         val PageNumber by remember { derivedStateOf { PagerSate.currentPage } }
         val context = LocalContext.current
 
