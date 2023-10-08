@@ -1,5 +1,6 @@
 package com.wm.dashdiary.presentation.screens.write
 
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wm.dashdiary.model.Diary
+import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
 import java.time.ZonedDateTime
 
@@ -19,11 +21,13 @@ fun WriteScreen(
     uiSate: UiSate,
     moodName: () -> String,
     PagerSate: PagerState,
+    galleryState:GalleryState,
     onBackPressed: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onDeleteConfirm: () -> Unit,
     onSaveClicked: (Diary) -> Unit,
+    onImageSelected:(Uri) -> Unit,
     onUpdatedDateTime: (ZonedDateTime) -> Unit,
 ) {
     LaunchedEffect(key1 = uiSate.mood) {
@@ -49,12 +53,14 @@ fun WriteScreen(
         ) {
             WriteContent(
                 PagerSate = PagerSate,
+                galleryState = galleryState,
                 title = uiSate.title,
                 onTitleChange = onTitleChange,
                 description = uiSate.description,
                 onDescriptionChange = onDescriptionChange,
                 uiSate = uiSate,
-                onSaveClicked = onSaveClicked
+                onSaveClicked = onSaveClicked,
+                onImageSelected = onImageSelected
             )
 
         }

@@ -1,5 +1,6 @@
 package com.wm.dashdiary.presentation.screens.write
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +41,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.wm.dashdiary.model.Diary
+import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
+import com.wm.dashdiary.presentation.components.GalleryUploader
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -48,11 +51,13 @@ import kotlinx.coroutines.launch
 fun WriteContent(
     uiSate: UiSate,
     PagerSate: PagerState,
+    galleryState: GalleryState,
     title: String,
     onTitleChange: (String) -> Unit,
     description: String,
     onDescriptionChange: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
+    onImageSelected: (Uri) -> Unit
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -134,13 +139,17 @@ fun WriteContent(
                     unfocusedContainerColor = Color.Transparent,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
-//                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Default),
-//                keyboardActions = KeyboardActions(onNext = {focusManager.moveFocus(FocusDirection.Enter)  }),
-
             )
 
         }
         Column(verticalArrangement = Arrangement.Bottom) {
+            Spacer(modifier = Modifier.height(12.dp))
+            GalleryUploader(
+                galleryState = galleryState,
+                onAddClicked = {focusManager.clearFocus()},
+                onImageSelect = onImageSelected,
+                onImageClicked = {}
+            )
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
