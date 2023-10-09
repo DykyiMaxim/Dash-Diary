@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import com.wm.dashdiary.navigation.Screen
 import com.wm.dashdiary.navigation.SetupNavGraph
 import com.wm.dashdiary.ui.theme.DashDiaryAppTheme
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition { keepSplashOpened }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         actionBar?.hide()
+        FirebaseApp.initializeApp(this)
 
 
 

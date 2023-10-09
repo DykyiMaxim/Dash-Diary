@@ -11,13 +11,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.stevdzasan.messagebar.ContentWithMessageBar
 import com.stevdzasan.messagebar.MessageBarState
 import com.stevdzasan.onetap.OneTapSignInState
 import com.stevdzasan.onetap.OneTapSignInWithGoogle
-import com.wm.dashdiary.R
 
 @ExperimentalMaterial3Api
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -28,7 +27,8 @@ fun AuthenticationScreen(
     oneTapState: OneTapSignInState,
     messageBarState: MessageBarState,
     onButtonClicked: () -> Unit,
-    onTokenIdReceives:(String)->Unit,
+    onSuccessfulFirebaseSignIn:(String)->Unit,
+    onFailedFirebaseSignIn:(Exception)->Unit,
     onDialogDismast:(String)->Unit,
     navigateToHome:()->Unit
 
@@ -56,7 +56,16 @@ fun AuthenticationScreen(
         state = oneTapState,
         clientId = com.wm.dashdiary.BuildConfig.googlecloudWebId,
         onTokenIdReceived = { tokenId ->
-            onTokenIdReceives(tokenId)
+            val credential = GoogleAuthProvider.getCredential(tokenId,null)
+            FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener{task ->
+                    if(task.isSuccessful){
+                        onSuccessfulFirebaseSignIn(tokenId)
+                    }else{
+                        task.exception?.let { onFailedFirebaseSignIn(it) }
+                    }
+                }
+            onSuccessfulFirebaseSignIn(tokenId)
         },
         onDialogDismissed = {message-> onDialogDismast(message)}
     )

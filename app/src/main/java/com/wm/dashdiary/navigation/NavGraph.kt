@@ -87,7 +87,7 @@ fun NavGraphBuilder.authenticationRout(
                 oneTapState.open()
                 viewModel.setLoading(true)
             },
-            onTokenIdReceives = { tokenId ->
+            onSuccessfulFirebaseSignIn = { tokenId ->
                 viewModel.SignInWithAtlas(
                     tokenId = tokenId,
                     onSuccess = {
@@ -95,8 +95,16 @@ fun NavGraphBuilder.authenticationRout(
                         viewModel.setLoading(false)
                     },
 
-                    onError = { messageBarState.addError(it) })
-                messageBarState.addSuccess("Successfully authenticated")
+                    onError = {
+                        messageBarState.addError(it)
+                        viewModel.setLoading(false)
+                    }
+                )
+
+            },
+            onFailedFirebaseSignIn = {
+                messageBarState.addError(it)
+                viewModel.setLoading(false)
             },
             onDialogDismast = { message ->
                 messageBarState.addError(Exception(message))
@@ -169,7 +177,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
     ) {
         val ViewModel: WriteViewModel = viewModel()
         val uiSate = ViewModel.uiSate
-        val PagerSate = rememberPagerState(pageCount = { Mood.values().size})
+        val PagerSate = rememberPagerState(pageCount = { Mood.values().size })
         val PageNumber by remember { derivedStateOf { PagerSate.currentPage } }
         val galleryState = rememberGalleryState()
         val context = LocalContext.current
@@ -181,7 +189,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onBackPressed = onBackPressed,
             onTitleChange = { ViewModel.setTitle(it) },
             onDescriptionChange = { ViewModel.setDescription(it) },
-            onImageSelected = {galleryState.addImage(GalleryImage(it,""))},
+            onImageSelected = { galleryState.addImage(GalleryImage(it, "")) },
             onDeleteConfirm = {
                 ViewModel.deleteDiary(
                     onSuccess = {
