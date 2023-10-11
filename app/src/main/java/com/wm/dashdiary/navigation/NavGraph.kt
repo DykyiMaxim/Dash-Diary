@@ -17,9 +17,7 @@ import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.wm.dashdiary.BuildConfig
 import com.wm.dashdiary.data.repository.RequestState
-import com.wm.dashdiary.model.GalleryImage
 import com.wm.dashdiary.model.Mood
-import com.wm.dashdiary.model.rememberGalleryState
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationScreen
 import com.wm.dashdiary.presentation.screens.auth.AuthenticationViewModel
 import com.wm.dashdiary.presentation.screens.home.HomeScreen
@@ -179,7 +177,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
         val uiSate = ViewModel.uiSate
         val PagerSate = rememberPagerState(pageCount = { Mood.values().size })
         val PageNumber by remember { derivedStateOf { PagerSate.currentPage } }
-        val galleryState = rememberGalleryState()
+        val galleryState = ViewModel.galleryState
         val context = LocalContext.current
 
         WriteScreen(
@@ -189,7 +187,10 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
             onBackPressed = onBackPressed,
             onTitleChange = { ViewModel.setTitle(it) },
             onDescriptionChange = { ViewModel.setDescription(it) },
-            onImageSelected = { galleryState.addImage(GalleryImage(it, "")) },
+            onImageSelected = {
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?:"jpg"
+                ViewModel.addImage(it,type)
+                              },
             onDeleteConfirm = {
                 ViewModel.deleteDiary(
                     onSuccess = {

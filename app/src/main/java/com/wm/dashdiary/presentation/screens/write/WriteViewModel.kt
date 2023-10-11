@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
 import com.wm.dashdiary.mapper.toRealmInstant
@@ -78,7 +79,7 @@ class WriteViewModel(
             }
         })
         if (result is RequestState.Success) {
-
+            uploadImagesToFirebase()
             withContext(Dispatchers.Main) {
                 onSuccess()
             }
@@ -101,6 +102,7 @@ class WriteViewModel(
             }
         })
         if (result is RequestState.Success) {
+            uploadImagesToFirebase()
             withContext(Dispatchers.Main) {
                 onSuccess()
             }
@@ -154,6 +156,14 @@ class WriteViewModel(
                 remoteImagePath = remoteImagePath
             )
         )
+    }
+    private fun uploadImagesToFirebase(){
+        val storage = FirebaseStorage.getInstance().reference
+        galleryState.images.forEach {galleryImage ->
+            val imagePath = storage.child(galleryImage.remoteImagePath)
+            imagePath.putFile(galleryImage.image)
+        }
+
     }
 
     fun setSelectedDiary(diary: Diary) {

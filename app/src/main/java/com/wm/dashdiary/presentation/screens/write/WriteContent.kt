@@ -44,6 +44,7 @@ import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
 import com.wm.dashdiary.presentation.components.GalleryUploader
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -162,6 +163,7 @@ fun WriteContent(
                             Diary().apply {
                                 this.title = uiSate.title
                                 this.description = uiSate.description
+                                this.Images = galleryState.images.map{it.remoteImagePath}.toRealmList()
                             }
                         )
 
