@@ -5,15 +5,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
+import com.wm.dashdiary.data.database.ImageToUploadDao
+import com.wm.dashdiary.data.repository.retryUploadingImageToFirebase
 import com.wm.dashdiary.navigation.Screen
 import com.wm.dashdiary.navigation.SetupNavGraph
 import com.wm.dashdiary.ui.theme.DashDiaryAppTheme
 import io.realm.kotlin.mongodb.App
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var imagesToUploadDao: ImageToUploadDao
     private var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +36,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             DashDiaryAppTheme {
                 val navController = rememberNavController()
-                SetupNavGraph(
-                    startDestination = getStartDestination(),
+                SetupNavGraph(startDestination = getStartDestination(),
                     navController = navController,
-                    onDataLoaded = { keepSplashOpened = false }
-                )
+                    onDataLoaded = { keepSplashOpened = false })
             }
         }
+        cleanupCheck(scope = lifecycleScope, imageToUploadDao = imagesToUploadDao)
     }
+}
+
+private fun cleanupCheck(scope: CoroutineScope, imageToUploadDao: ImageToUploadDao) {
+    scope.launch(Dispatchers.IO) {
+        val result = imageToUploadDao.getAllImages()
+        result.forEach { imageToUpload ->
+            retryUploadingImageToFirebase(imageToUpload = imageToUpload, onSuccess = {
+                scope.launch(Dispatchers.IO) {
+                    imageToUploadDao.cleanupImage(imageId = imageToUpload.id)
+                }
+            })
+
+        }
+
+    }
+
 }
 
 private fun getStartDestination(): String {

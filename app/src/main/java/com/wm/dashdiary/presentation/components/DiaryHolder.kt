@@ -42,7 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.wm.dashdiary.data.repository.Firebase
+import com.wm.dashdiary.data.repository.fetchImagesFromFirebase
 import com.wm.dashdiary.mapper.toInstant
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.Mood
@@ -63,10 +63,9 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
     val downloadedImages = remember { mutableStateListOf<Uri>() }
 
     LaunchedEffect(key1 = galleryOpen) {
-        if (galleryOpen && downloadedImages.isNotEmpty()) {
+        if (galleryOpen && downloadedImages.isEmpty()) {
             galleryLoading = true
-            Firebase().fetchImagesFromFirebase(
-                remoteImagePaths = diary.Images.toList(),
+            fetchImagesFromFirebase(remoteImagePaths = diary.Images.toList(),
                 onImageDownload = { image ->
                     downloadedImages.add(image)
                 },
@@ -88,17 +87,15 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
             )
         }
     }
-    Row(modifier = Modifier
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() })
-        { onClick(diary._id.toHexString()) }) {
+    Row(modifier = Modifier.clickable(indication = null,
+        interactionSource = remember { MutableInteractionSource() }) { onClick(diary._id.toHexString()) }) {
 
         Spacer(modifier = Modifier.width(14.dp))
         Surface(
             modifier = Modifier
                 .width(2.dp)
-                .height(componentHeight + 14.dp), tonalElevation = Elevation.level1
+                .height(componentHeight + 14.dp),
+            tonalElevation = Elevation.level1
         ) {}
         Spacer(modifier = Modifier.width(20.dp))
         Surface(
@@ -106,14 +103,11 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
                 .clip(shape = Shapes().medium)
                 .onGloballyPositioned {
                     componentHeight = with(localDensity) { it.size.height.toDp() }
-                },
-            tonalElevation = Elevation.level1
+                }, tonalElevation = Elevation.level1
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 DiaryHeader(
-                    moodName = diary.mood,
-                    time = diary.date.toInstant(),
-                    title = diary.title
+                    moodName = diary.mood, time = diary.date.toInstant(), title = diary.title
                 )
                 Text(
                     modifier = Modifier.padding(all = 14.dp),
@@ -123,17 +117,14 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
                 if (diary.Images.isNotEmpty()) {
-                    ShowGalleryButton(
-                        galleryOpened = galleryOpen,
+                    ShowGalleryButton(galleryOpened = galleryOpen,
                         galleryLoading = galleryLoading,
                         onCLick = {
                             galleryOpen = !galleryOpen
-                        }
-                    )
+                        })
                 }
                 AnimatedVisibility(
-                    visible = galleryOpen && !galleryLoading,
-                    enter = fadeIn() + expandVertically(
+                    visible = galleryOpen && !galleryLoading, enter = fadeIn() + expandVertically(
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioMediumBouncy,
                             stiffness = Spring.StiffnessLow
@@ -160,8 +151,7 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
 fun DiaryHeader(moodName: String, time: Instant, title: String) {
     val mood by remember { mutableStateOf(Mood.valueOf(moodName)) }
     val formatter = remember {
-        DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
-            .withZone(ZoneId.systemDefault())
+        DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()).withZone(ZoneId.systemDefault())
     }
     Row(
         modifier = Modifier
@@ -201,14 +191,11 @@ fun DiaryHeader(moodName: String, time: Instant, title: String) {
 
 @Composable
 fun ShowGalleryButton(
-    galleryOpened: Boolean,
-    galleryLoading: Boolean,
-    onCLick: () -> Unit
+    galleryOpened: Boolean, galleryLoading: Boolean, onCLick: () -> Unit
 ) {
     TextButton(onClick = onCLick) {
         Text(
-            text = if (galleryOpened)
-                if (galleryLoading) "Loading" else "Hide Gallery"
+            text = if (galleryOpened) if (galleryLoading) "Loading" else "Hide Gallery"
             else "Show Gallery",
 
             style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)

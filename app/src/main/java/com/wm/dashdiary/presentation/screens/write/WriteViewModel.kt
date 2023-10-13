@@ -8,14 +8,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.wm.dashdiary.data.database.ImageToUploadDao
+import com.wm.dashdiary.data.database.entity.ImageToUpload
 import com.wm.dashdiary.data.repository.MongoDB
 import com.wm.dashdiary.data.repository.RequestState
+import com.wm.dashdiary.data.repository.fetchImagesFromFirebase
 import com.wm.dashdiary.mapper.toRealmInstant
 import com.wm.dashdiary.model.Diary
 import com.wm.dashdiary.model.GalleryImage
 import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -23,9 +29,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.mongodb.kbson.ObjectId
 import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class WriteViewModel(
-    private val savedStateHandle: SavedStateHandle
+@HiltViewModel
+class WriteViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle, private val imagesToUploadDao: ImageToUploadDao
 ) : ViewModel() {
     val galleryState = GalleryState()
     var uiSate by mutableStateOf(UiSate())
@@ -57,6 +65,15 @@ class WriteViewModel(
                         setTitle(title = diary.data.title)
                         setDescription(description = diary.data.description)
                         setMood(mood = Mood.valueOf(diary.data.mood))
+                        fetchImagesFromFirebase(remoteImagePaths = diary.data.Images,
+                            onImageDownload = { downloadImage ->
+                                galleryState.addImage(
+                                    galleryImage = GalleryImage(
+                                        image = downloadImage,
+                                        remoteImagePath = extractRemoteImagePath(fullImageUrl = downloadImage.toString())
+                                    )
+                                )
+                            })
 
                     }
 
@@ -65,6 +82,13 @@ class WriteViewModel(
 
             }
         }
+    }
+
+    private fun extractRemoteImagePath(fullImageUrl: String): String {
+        val chunk = fullImageUrl.split("%2F")
+        val imageName = chunk[2].split("?").first()
+        return "images/${Firebase.auth.currentUser?.uid}/$imageName"
+
     }
 
     private suspend fun insertDiary(
@@ -147,21 +171,36 @@ class WriteViewModel(
 
 
     }
+
     fun addImage(image: Uri, imageType: String) {
-        val remoteImagePath = "images/${FirebaseAuth.getInstance().currentUser?.uid}/" +
-                "${image.lastPathSegment}-${System.currentTimeMillis()}.$imageType"
+        val remoteImagePath =
+            "images/${FirebaseAuth.getInstance().currentUser?.uid}/" + "${image.lastPathSegment}-${System.currentTimeMillis()}.$imageType"
         galleryState.addImage(
             GalleryImage(
-                image = image,
-                remoteImagePath = remoteImagePath
+                image = image, remoteImagePath = remoteImagePath
             )
         )
     }
-    private fun uploadImagesToFirebase(){
+
+    private fun uploadImagesToFirebase() {
         val storage = FirebaseStorage.getInstance().reference
-        galleryState.images.forEach {galleryImage ->
+        galleryState.images.forEach { galleryImage ->
             val imagePath = storage.child(galleryImage.remoteImagePath)
-            imagePath.putFile(galleryImage.image)
+            imagePath.putFile(galleryImage.image).addOnPausedListener {
+                val sessionUri = it.uploadSessionUri
+                if (sessionUri != null) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        imagesToUploadDao.addImageToUpload(
+                            ImageToUpload(
+                                remoteImagePath = galleryImage.remoteImagePath,
+                                imageUri = galleryImage.image.toString(),
+                                sessionUri = sessionUri.toString()
+                            )
+                        )
+                    }
+
+                }
+            }
         }
 
     }
