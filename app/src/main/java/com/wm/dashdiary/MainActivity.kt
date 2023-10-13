@@ -13,13 +13,14 @@ import com.wm.dashdiary.data.repository.retryUploadingImageToFirebase
 import com.wm.dashdiary.navigation.Screen
 import com.wm.dashdiary.navigation.SetupNavGraph
 import com.wm.dashdiary.ui.theme.DashDiaryAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import io.realm.kotlin.mongodb.App
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var imagesToUploadDao: ImageToUploadDao
