@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.wm.dashdiary.model.Diary
+import com.wm.dashdiary.model.GalleryImage
 import com.wm.dashdiary.model.GalleryState
 import com.wm.dashdiary.model.Mood
 import com.wm.dashdiary.presentation.components.GalleryUploader
@@ -58,6 +59,7 @@ fun WriteContent(
     description: String,
     onDescriptionChange: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
+    onImageClicked: (GalleryImage) -> Unit,
     onImageSelected: (Uri) -> Unit
 ) {
     val context = LocalContext.current
@@ -147,9 +149,9 @@ fun WriteContent(
             Spacer(modifier = Modifier.height(12.dp))
             GalleryUploader(
                 galleryState = galleryState,
-                onAddClicked = {focusManager.clearFocus()},
+                onAddClicked = { focusManager.clearFocus() },
                 onImageSelect = onImageSelected,
-                onImageClicked = {}
+                onImageClicked =  onImageClicked
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -163,7 +165,8 @@ fun WriteContent(
                             Diary().apply {
                                 this.title = uiSate.title
                                 this.description = uiSate.description
-                                this.Images = galleryState.images.map{it.remoteImagePath}.toRealmList()
+                                this.Images =
+                                    galleryState.images.map { it.remoteImagePath }.toRealmList()
                             }
                         )
 

@@ -213,6 +213,7 @@ fun NavGraphBuilder.WriteRout(onBackPressed: () -> Unit) {
                 )
             },
             onUpdatedDateTime = { ViewModel.setDateTime(zonedDateTime = it) },
+            onImageDeleteClicked = {}
         )
     }
 }
